@@ -24,6 +24,7 @@
       --card-bg-dark: #1e1e1e;
       --shadow-light: rgba(0, 0, 0, 0.15);
       --shadow-dark: rgba(0, 0, 0, 0.4);
+      --green-glow: rgba(76, 175, 80, 0.3); /* لون أخضر هادئ للإضاءة */
     }
 
     body {
@@ -87,6 +88,17 @@
 
     .dark-mode h2 {
       color: var(--primary-color);
+    }
+
+    p.service-description {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #666;
+    }
+
+    .dark-mode p.service-description {
+      color: #aaa;
     }
 
     p.subtitle {
@@ -235,6 +247,7 @@
     .dark-mode .toast {
       background: #333;
       color: #fff;
+      box-shadow: 0 0 10px var(--green-glow); /* إضاءة خارجية خضراء */
     }
 
     .footer {
@@ -274,6 +287,7 @@
     </div>
     <div class="container">
       <h2 data-en="Booklet Printing Calculator" data-ar="حاسبة طباعة الكتيبات">حاسبة طباعة الكتيبات</h2>
+      <p class="service-description" data-en="This service accurately calculates page order to convert a PDF file into a printed booklet, enabling you to choose between single-sided or double-sided printing with ease and efficiency, while supporting printers with automatic duplex printing." data-ar="هذه الخدمة تقوم بحساب ترتيب الصفحات بدقة عالية لتحويل ملف PDF إلى كتيب مطبوع، مما يتيح لك اختيار الطباعة على وجه واحد أو وجهين بسهولة وكفاءة، مع دعم الطابعات التي تقوم بالطباعة التلقائية على الوجهين.">هذه الخدمة تقوم بحساب ترتيب الصفحات بدقة عالية لتحويل ملف PDF إلى كتيب مطبوع، مما يتيح لك اختيار الطباعة على وجه واحد أو وجهين بسهولة وكفاءة، مع دعم الطابعات التي تقوم بالطباعة التلقائية على الوجهين.</p>
       <p class="subtitle" data-en="Design your booklet with a cutting-edge interface." data-ar="صمم كتيبك بواجهة متطورة.">صمم كتيبك بواجهة متطورة.</p>
 
       <form class="inline-form">
@@ -365,7 +379,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
   <script>
-    // حساب ترتيب الصفحات مع إضافة مسافة بعد الفواصل
+    // حساب ترتيب الصفحات بدون مسافة بعد الفواصل
     function calculate() {
       let duplex = document.getElementById('duplex').value;
       let direction = document.getElementById('direction').value;
@@ -379,7 +393,7 @@
         let pagesPerPaper = 4;
         let pageRemainder = count % pagesPerPaper;
         document.getElementById('prep-tip-1-1').textContent = pagesPerPaper;
-        document.getElementById('prep-tip-1-2').textContent = "4, 8, 12";
+        document.getElementById('prep-tip-1-2').textContent = "4,8,12";
         let printTip1 = document.body.lang === "ar" ? 
           `اضبط إعداد "الصفحات لكل جانب" في الطابعة على ${pagesPerPaper / 2}.` : 
           `Set your printer's "pages per side" to ${pagesPerPaper / 2}.`;
@@ -389,8 +403,8 @@
         document.getElementById('print-tip-singlesided-10').textContent = document.body.lang === "ar" ? "اطوِ الورق لإنشاء كتيبك!" : "Fold to create your booklet!";
         if (pageRemainder === 0 && count > 0) {
           for (let i = 1; i < count / 2; i += 2) {
-            let newside1 = direction === "LTR" ? `${count - i + 1}, ${i}, ` : `${i}, ${count - i + 1}, `;
-            let newside2 = direction === "LTR" ? `${i + 1}, ${count - i}, ` : `${count - i}, ${i + 1}, `;
+            let newside1 = direction === "LTR" ? `${count - i + 1},${i},` : `${i},${count - i + 1},`;
+            let newside2 = direction === "LTR" ? `${i + 1},${count - i},` : `${count - i},${i + 1},`;
             side1list += newside1;
             side2list += newside2;
             duplexlist += newside1 + newside2;
@@ -406,7 +420,7 @@
         let pagesPerPaper = 8;
         let pageRemainder = count % pagesPerPaper;
         document.getElementById('prep-tip-1-1').textContent = pagesPerPaper;
-        document.getElementById('prep-tip-1-2').textContent = "8, 16, 24";
+        document.getElementById('prep-tip-1-2').textContent = "8,16,24";
         let printTip1 = document.body.lang === "ar" ? 
           `اضبط إعداد "الصفحات لكل جانب" في الطابعة على ${pagesPerPaper / 2}.` : 
           `Set your printer's "pages per side" to ${pagesPerPaper / 2}.`;
@@ -417,11 +431,11 @@
         if (pageRemainder === 0 && count > 0) {
           for (let i = 1; i < count / 4; i += 2) {
             let newside1 = direction === "LTR" ?
-              `${count - i + 1}, ${i}, ${count - (count / 4) - i + 1}, ${i + (count / 4)}, ` :
-              `${i}, ${count - i + 1}, ${i + (count / 4)}, ${count - (count / 4) - i + 1}, `;
+              `${count - i + 1},${i},${count - (count / 4) - i + 1},${i + (count / 4)},` :
+              `${i},${count - i + 1},${i + (count / 4)},${count - (count / 4) - i + 1},`;
             let newside2 = direction === "LTR" ?
-              `${i + 1}, ${count - i}, ${i + 1 + (count / 4)}, ${count - i - (count / 4)}, ` :
-              `${count - i}, ${i + 1}, ${count - i - (count / 4)}, ${i + 1 + (count / 4)}, `;
+              `${i + 1},${count - i},${i + 1 + (count / 4)},${count - i - (count / 4)},` :
+              `${count - i},${i + 1},${count - i - (count / 4)},${i + 1 + (count / 4)},`;
             side1list += newside1;
             side2list += newside2;
             duplexlist += newside1 + newside2;
@@ -435,9 +449,9 @@
         }
       }
 
-      side1list = side1list.slice(0, -2);
-      side2list = side2list.slice(0, -2);
-      duplexlist = duplexlist.slice(0, -2);
+      side1list = side1list.slice(0, -1);
+      side2list = side2list.slice(0, -1);
+      duplexlist = duplexlist.slice(0, -1);
 
       document.getElementById('side1list').value = side1list;
       document.getElementById('side2list').value = side2list;
@@ -448,6 +462,19 @@
       let copyText = document.getElementById(id);
       copyText.select();
       document.execCommand("copy");
+      toastr.options = {
+        positionClass: 'toast-top-center',
+        showDuration: 300,
+        hideDuration: 1000,
+        timeOut: 2000,
+        extendedTimeOut: 1000,
+        showEasing: 'swing',
+        hideEasing: 'linear',
+        showMethod: 'fadeIn',
+        hideMethod: 'fadeOut',
+        progressBar: true,
+        boxShadow: '0 0 10px var(--green-glow)' // إضاءة خارجية خضراء
+      };
       toastr.info(document.body.lang === "ar" ? "تم النسخ إلى الحافظة" : "Copied to clipboard");
     }
 
