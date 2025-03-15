@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Booklet Printing Calculator | Ultra Modern UI</title>
+  <!-- مكتبات الـ CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Cairo:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Flag Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+  <style>
+    :root {
+      --primary-color: #00c4cc;
+      --secondary-color: #1e2a44;
+      --bg-light: #f0f4f8;
+      --bg-dark: #121212;
+      --text-light: #1e2a44;
+      --text-dark: #e0e0e0;
+      --card-bg-light: #ffffff;
+      --card-bg-dark: #1e1e1e;
+      --shadow-light: rgba(0, 0, 0, 0.15);
+      --shadow-dark: rgba(0, 0, 0, 0.4);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      transition: background 0.5s ease, color 0.5s ease;
+      overflow-x: hidden;
+    }
+
+    body[lang="ar"] {
+      font-family: 'Cairo', sans-serif;
+      direction: rtl;
+      text-align: right;
+    }
+
+    body.light-mode {
+      background: linear-gradient(135deg, var(--bg-light) 0%, #d9e8f5 100%);
+      color: var(--text-light);
+    }
+
+    body.dark-mode {
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #2a2a2a 100%);
+      color: var(--text-dark);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card-bg-light);
+      border-radius: 25px;
+      box-shadow: 0 10px 30px var(--shadow-light);
+      padding: 40px 60px;
+      animation: slideIn 0.5s ease-out;
+      transition: background 0.5s ease, box-shadow 0.5s ease;
+      position: relative;
+    }
+
+    .dark-mode .card {
+      background: var(--card-bg-dark);
+      box-shadow: 0 10px 30px var(--shadow-dark);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    h2 {
+      font-weight: 700;
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+      color: var(--secondary-color);
+      text-align: center;
+    }
+
+    .dark-mode h2 {
+      color: var(--primary-color);
+    }
+
+    p.subtitle {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+      color: #666;
+    }
+
+    .dark-mode p.subtitle {
+      color: #aaa;
+    }
+
+    h3 {
+      font-weight: 600;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--secondary-color);
+    }
+
+    .dark-mode h3 {
+      color: var(--text-dark);
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      display: block;
+      color: var(--text-light);
+    }
+
+    .dark-mode label {
+      color: var(--text-dark);
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      max-width: 350px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #f7f9fc;
+      font-size: 1rem;
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .dark-mode select, .dark-mode input[type="text"] {
+      background: #2a2a2a;
+      color: var(--text-dark);
+      box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    select:focus, input[type="text"]:focus {
+      box-shadow: 0 0 10px rgba(0, 196, 204, 0.5);
+      outline: none;
+    }
+
+    .btn-info, .btn-toggle {
+      background: var(--primary-color);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 196, 204, 0.3);
+      cursor: pointer;
+    }
+
+    .btn-info:hover, .btn-toggle:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 196, 204, 0.5);
+      background: #00b0b8;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-group input {
+      flex-grow: 1;
+    }
+
+    .instructions {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 25px;
+      border-radius: 15px;
+      margin-top: 20px;
+      transition: background 0.5s ease;
+    }
+
+    .dark-mode .instructions {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .instructions p {
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+
+    .controls {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn-toggle {
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lang-toggle {
+      position: absolute;
+      left: 15px;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      right: 15px;
+    }
+
+    .flag-icon {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .dark-mode .toast {
+      background: #333;
+      color: #fff;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .dark-mode .footer {
+      color: #aaa;
+    }
+
+    .social-icons {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .social-icons a {
+      color: var(--primary-color);
+      font-size: 1.5rem;
+      transition: color 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      color: #00b0b8;
+    }
+  </style>
+</head>
+<body class="light-mode" lang="ar">
+  <div class="card">
+    <div class="controls">
+      <button class="btn-toggle lang-toggle" id="langToggle"><span class="flag-icon flag-icon-gb"></span></button>
+      <button class="btn-toggle theme-toggle" id="themeToggle"><i class="fas fa-sun"></i></button>
+    </div>
+    <div class="container">
+      <h2 data-en="Booklet Printing Calculator" data-ar="حاسبة طباعة الكتيبات">حاسبة طباعة الكتيبات</h2>
+      <p class="subtitle" data-en="Design your booklet with a cutting-edge interface." data-ar="صمم كتيبك بواجهة متطورة.">صمم كتيبك بواجهة متطورة.</p>
+
+      <form class="inline-form">
+        <div class="row">
+          <div class="col-md-6">
+            <h3 data-en="Preparation" data-ar="التحضير">التحضير</h3>
+            <div class="form-group">
+              <label data-en="Pages per sheet" data-ar="الصفحات لكل ورقة">الصفحات لكل ورقة</label>
+              <select id="pageMode" onchange="calculate();">
+                <option value="2" data-en="2 pages" data-ar="صفحتان">صفحتان</option>
+                <option value="4" selected data-en="4 pages" data-ar="4 صفحات">4 صفحات</option>
+              </select>
+            </div>
+            <div class="form-group" id="prep-tip-1">
+              <label data-en="Page count tip" data-ar="نصيحة حول عدد الصفحات">نصيحة حول عدد الصفحات</label>
+              <p data-en="Ensure your document has <b id='prep-tip-1-1'>4</b> pages (e.g., <i id='prep-tip-1-2'>4, 8, 12</i>...). Add blank pages if needed."
+                 data-ar="تأكد أن مستندك يحتوي على <b id='prep-tip-1-1'>4</b> صفحات (مثل <i id='prep-tip-1-2'>4، 8، 12</i>...). أضف صفحات فارغة إذا لزم الأمر.">تأكد أن مستندك يحتوي على <b id="prep-tip-1-1">4</b> صفحات (مثل <i id="prep-tip-1-2">4، 8، 12</i>...). أضف صفحات فارغة إذا لزم الأمر.</p>
+            </div>
+            <div class="form-group">
+              <label data-en="Page count" data-ar="عدد الصفحات">عدد الصفحات</label>
+              <input type="text" id="count" value="16" onchange="calculate();" />
+            </div>
+            <div class="form-group">
+              <label data-en="Double-sided printing?" data-ar="طباعة على الوجهين؟">طباعة على الوجهين؟</label>
+              <select id="duplex" onchange="calculate();">
+                <option value="No" data-en="No" data-ar="لا">لا</option>
+                <option value="Yes" data-en="Yes" data-ar="نعم">نعم</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label data-en="Reading direction" data-ar="اتجاه القراءة">اتجاه القراءة</label>
+              <select id="direction" onchange="calculate();">
+                <option value="LTR" data-en="Left-to-right" data-ar="من اليسار إلى اليمين">من اليسار إلى اليمين</option>
+                <option value="RTL" data-en="Right-to-left" data-ar="من اليمين إلى اليسار">من اليمين إلى اليسار</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h3 data-en="Printing Instructions" data-ar="تعليمات الطباعة">تعليمات الطباعة</h3>
+            <div class="instructions" id="doublesided" style="display: none;">
+              <p id="print-tip-doublesided-1"></p>
+              <p data-en="Set '2-sided' to short/long edge based on orientation." data-ar="اضبط 'الطباعة على الوجهين' على الحافة القصيرة/الطويلة حسب الاتجاه.">اضبط 'الطباعة على الوجهين' على الحافة القصيرة/الطويلة حسب الاتجاه.</p>
+              <div class="form-group">
+                <label data-en="Print order" data-ar="ترتيب الطباعة">ترتيب الطباعة</label>
+                <div class="input-group">
+                  <input class="form-control" type="text" id="duplexlist" />
+                  <button onclick="copyToClipboard('duplexlist');" class="btn btn-info" type="button"><i class="fas fa-copy"></i> <span data-en="Copy" data-ar="نسخ">نسخ</span></button>
+                </div>
+              </div>
+              <p id="print-tip-doublesided-10"></p>
+            </div>
+            <div class="instructions" id="singlesided">
+              <p id="print-tip-singlesided-1"></p>
+              <div class="form-group">
+                <label data-en="Print side 1" data-ar="طباعة الجانب الأول">طباعة الجانب الأول</label>
+                <div class="input-group">
+                  <input class="form-control" type="text" id="side1list" />
+                  <button onclick="copyToClipboard('side1list');" class="btn btn-info" type="button"><i class="fas fa-copy"></i> <span data-en="Copy" data-ar="نسخ">نسخ</span></button>
+                </div>
+              </div>
+              <p data-en="Flip pages and reload printer." data-ar="اقلب الصفحات وأعد تحميل الطابعة.">اقلب الصفحات وأعد تحميل الطابعة.</p>
+              <div class="form-group">
+                <label data-en="Print side 2" data-ar="طباعة الجانب الثاني">طباعة الجانب الثاني</label>
+                <div class="input-group">
+                  <input class="form-control" type="text" id="side2list" />
+                  <button onclick="copyToClipboard('side2list');" class="btn btn-info" type="button"><i class="fas fa-copy"></i> <span data-en="Copy" data-ar="نسخ">نسخ</span></button>
+                </div>
+              </div>
+              <p id="print-tip-singlesided-10"></p>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- حقوق النشر وأيقونات التواصل -->
+      <div class="footer">
+        <p data-en="© 2025 Developed by yasinoss" data-ar="© 2025 تم التطوير بواسطة yasinoss">© 2025 تم التطوير بواسطة yasinoss</p>
+        <div class="social-icons">
+          <a href="https://fb.me/MrYasinoss" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://wa.me/21655331334" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مكتبات الـ JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+  <script>
+    // حساب ترتيب الصفحات مع إضافة مسافة بعد الفواصل
+    function calculate() {
+      let duplex = document.getElementById('duplex').value;
+      let direction = document.getElementById('direction').value;
+      let pageMode = document.getElementById('pageMode').value;
+      document.getElementById("doublesided").style.display = duplex === "Yes" ? "block" : "none";
+      document.getElementById("singlesided").style.display = duplex === "Yes" ? "none" : "block";
+      let count = parseInt(document.getElementById('count').value) || 0;
+      let duplexlist = '', side1list = '', side2list = '';
+
+      if (pageMode === '2') {
+        let pagesPerPaper = 4;
+        let pageRemainder = count % pagesPerPaper;
+        document.getElementById('prep-tip-1-1').textContent = pagesPerPaper;
+        document.getElementById('prep-tip-1-2').textContent = "4, 8, 12";
+        let printTip1 = document.body.lang === "ar" ? 
+          `اضبط إعداد "الصفحات لكل جانب" في الطابعة على ${pagesPerPaper / 2}.` : 
+          `Set your printer's "pages per side" to ${pagesPerPaper / 2}.`;
+        document.getElementById('print-tip-doublesided-1').textContent = printTip1;
+        document.getElementById('print-tip-singlesided-1').textContent = printTip1;
+        document.getElementById('print-tip-doublesided-10').textContent = document.body.lang === "ar" ? "اطوِ الورق لإنشاء كتيبك!" : "Fold to create your booklet!";
+        document.getElementById('print-tip-singlesided-10').textContent = document.body.lang === "ar" ? "اطوِ الورق لإنشاء كتيبك!" : "Fold to create your booklet!";
+        if (pageRemainder === 0 && count > 0) {
+          for (let i = 1; i < count / 2; i += 2) {
+            let newside1 = direction === "LTR" ? `${count - i + 1}, ${i}, ` : `${i}, ${count - i + 1}, `;
+            let newside2 = direction === "LTR" ? `${i + 1}, ${count - i}, ` : `${count - i}, ${i + 1}, `;
+            side1list += newside1;
+            side2list += newside2;
+            duplexlist += newside1 + newside2;
+          }
+        } else {
+          let msg = document.body.lang === "ar" ? 
+            `غير قابل للقسمة على ${pagesPerPaper}. تحتاج إلى ${pagesPerPaper - pageRemainder} صفحة/صفحات أخرى.` : 
+            `Not divisible by ${pagesPerPaper}. Need ${pagesPerPaper - pageRemainder} more page(s).`;
+          side1list = duplexlist = msg;
+          side2list = "";
+        }
+      } else if (pageMode === '4') {
+        let pagesPerPaper = 8;
+        let pageRemainder = count % pagesPerPaper;
+        document.getElementById('prep-tip-1-1').textContent = pagesPerPaper;
+        document.getElementById('prep-tip-1-2').textContent = "8, 16, 24";
+        let printTip1 = document.body.lang === "ar" ? 
+          `اضبط إعداد "الصفحات لكل جانب" في الطابعة على ${pagesPerPaper / 2}.` : 
+          `Set your printer's "pages per side" to ${pagesPerPaper / 2}.`;
+        document.getElementById('print-tip-doublesided-1').textContent = printTip1;
+        document.getElementById('print-tip-singlesided-1').textContent = printTip1;
+        document.getElementById('print-tip-doublesided-10').textContent = document.body.lang === "ar" ? "قطّع الصفحات أفقيًا من المنتصف، رص الجزء العلوي فوق السفلي، ثم اطوِ!" : "Cut pages in half horizontally, stack top over bottom, then fold!";
+        document.getElementById('print-tip-singlesided-10').textContent = document.body.lang === "ar" ? "اقلب الكومة (الصفحة الأولى للأعلى)، قطّع الصفحات أفقيًا من المنتصف، رص الجزء العلوي فوق السفلي، ثم اطوِ!" : "Flip pile (first page up), cut in half horizontally, stack top over bottom, then fold!";
+        if (pageRemainder === 0 && count > 0) {
+          for (let i = 1; i < count / 4; i += 2) {
+            let newside1 = direction === "LTR" ?
+              `${count - i + 1}, ${i}, ${count - (count / 4) - i + 1}, ${i + (count / 4)}, ` :
+              `${i}, ${count - i + 1}, ${i + (count / 4)}, ${count - (count / 4) - i + 1}, `;
+            let newside2 = direction === "LTR" ?
+              `${i + 1}, ${count - i}, ${i + 1 + (count / 4)}, ${count - i - (count / 4)}, ` :
+              `${count - i}, ${i + 1}, ${count - i - (count / 4)}, ${i + 1 + (count / 4)}, `;
+            side1list += newside1;
+            side2list += newside2;
+            duplexlist += newside1 + newside2;
+          }
+        } else {
+          let msg = document.body.lang === "ar" ? 
+            `غير قابل للقسمة على ${pagesPerPaper}. تحتاج إلى ${pagesPerPaper - pageRemainder} صفحة/صفحات أخرى.` : 
+            `Not divisible by ${pagesPerPaper}. Need ${pagesPerPaper - pageRemainder} more page(s).`;
+          side1list = duplexlist = msg;
+          side2list = "";
+        }
+      }
+
+      side1list = side1list.slice(0, -2);
+      side2list = side2list.slice(0, -2);
+      duplexlist = duplexlist.slice(0, -2);
+
+      document.getElementById('side1list').value = side1list;
+      document.getElementById('side2list').value = side2list;
+      document.getElementById('duplexlist').value = duplexlist;
+    }
+
+    function copyToClipboard(id) {
+      let copyText = document.getElementById(id);
+      copyText.select();
+      document.execCommand("copy");
+      toastr.info(document.body.lang === "ar" ? "تم النسخ إلى الحافظة" : "Copied to clipboard");
+    }
+
+    function init() {
+      calculate();
+    }
+
+    // تبديل الوضع الليلي
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+      document.body.classList.toggle('light-mode');
+      const themeToggle = document.getElementById('themeToggle');
+      themeToggle.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    }
+
+    // تبديل اللغة
+    function toggleLanguage() {
+      const currentLang = document.body.lang;
+      const newLang = currentLang === "en" ? "ar" : "en";
+      document.body.lang = newLang;
+      const langToggle = document.getElementById('langToggle');
+      langToggle.innerHTML = newLang === "en" ? '<span class="flag-icon flag-icon-tn"></span>' : '<span class="flag-icon flag-icon-gb"></span>';
+
+      // تحديث النصوص
+      document.querySelectorAll('[data-en]').forEach(element => {
+        const key = newLang === "en" ? "data-en" : "data-ar";
+        if (element.tagName === "OPTION") {
+          element.text = element.getAttribute(key);
+        } else if (element.tagName === "SPAN") {
+          element.textContent = element.getAttribute(key);
+        } else if (element.tagName === "P" && element.id.startsWith("print-tip")) {
+          element.textContent = element.getAttribute(key);
+        } else {
+          element.innerHTML = element.getAttribute(key);
+        }
+      });
+
+      calculate();
+    }
+
+    // تشغيل الواجهة عند التحميل ومراقبة تغيير الوضع
+    document.addEventListener("DOMContentLoaded", function() {
+      // تعيين اللغة العربية كافتراضية عند التحميل
+      document.body.lang = "ar";
+      const langToggle = document.getElementById('langToggle');
+      langToggle.innerHTML = '<span class="flag-icon flag-icon-gb"></span>'; // أيقونة العلم البريطاني لأن اللغة الحالية عربية
+
+      // تحديث النصوص لتكون بالعربية عند التحميل
+      document.querySelectorAll('[data-en]').forEach(element => {
+        const key = "data-ar";
+        if (element.tagName === "OPTION") {
+          element.text = element.getAttribute(key);
+        } else if (element.tagName === "SPAN") {
+          element.textContent = element.getAttribute(key);
+        } else if (element.tagName === "P" && element.id.startsWith("print-tip")) {
+          element.textContent = element.getAttribute(key);
+        } else {
+          element.innerHTML = element.getAttribute(key);
+        }
+      });
+
+      // تحديد الوضع (نهاري/ليلي) عند التحميل
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.remove('light-mode');
+        document.body.classList.add('dark-mode');
+        document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon"></i>';
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.body.classList.add('light-mode');
+        document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+      }
+
+      init();
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (e.matches) {
+          document.body.classList.remove('light-mode');
+          document.body.classList.add('dark-mode');
+          document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+          document.body.classList.remove('dark-mode');
+          document.body.classList.add('light-mode');
+          document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+        }
+      });
+
+      document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+      document.getElementById('langToggle').addEventListener('click', toggleLanguage);
+    });
+
+    $(".chosen-select").chosen();
+  </script>
+</body>
+</html>
